@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Video.js Sandbox - Responsive</title>
+  <link href="css/video-js.min.css" rel="stylesheet" type="text/css">
+  <script src="js/video.min.js"></script>
+  <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    /* .breakpoints, .video-js, table {
+      margin: 1em 0;
+    } */
+    .slidecontainer {
+      width: 100%; /* Width of the outside container */
+    }
+    .slider {
+      -webkit-appearance: none;  /* Override default CSS styles */
+      appearance: none;
+      width: 100%; /* Full-width */
+      height: 25px; /* Specified height */
+      background: #d3d3d3; /* Grey background */
+      outline: none; /* Remove outline */
+      opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+      -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+      transition: opacity .2s;
+    }
+    .slider-square {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 24px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: opacity .15s ease-in-out;
+    transition: opacity .15s ease-in-out;
+}
+.slider-square:hover {
+  opacity:1;
+}
+.slider-square::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+.slider-square::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: #4CAF50;
+  cursor: pointer;
+}
+  #interval{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  </style>
+
+</head>
+<body>
+  <div class="slidecontainer">
+  <input type="range" min="1" max="1000" value="500" class="slider slider-square" id="interval">
+</div>
+  <video-js class="vjs-fluid" controls mute preload="auto" >
+    <!-- <source src="http://192.168.1.111/shares/U/col-des-tentes.mp4" type="video/mp4"> -->
+    <!-- <source src="http://192.168.1.111/shares/U/col-part1of2-37m.mp4" type="video/mp4"> -->
+    <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+  </video-js>
+
+  <script>
+    document.querySelector('#interval').addEventListener('change', e => {
+      console.log('change' + e.target.value/1000.0);
+    })
+
+
+    var vid = document.querySelector('video-js');
+    var player = videojs(vid, {
+      responsive: true,
+      autoplay: true
+    })
+    .ready(function(){
+      player = this;
+      // console.log('ready', this, player);
+      // this.currentTime(30);
+      // this.play();
+
+      // this.on('play', ev => {
+      //   // console.log('playing!');
+      //   // debugger;
+      //   // ev.target.currentTime = 30;
+      // })
+
+    });
+
+    console.log('player', player)
+    player.currentTime(30);
+    // player.play();
+
+    player.on('playerresize', function() {
+      var values = {
+        breakpoint: player.currentBreakpoint(),
+        className: player.el().className.match(/vjs-layout-([a-z\-]+)/)[0],
+        playerWidth: player.currentWidth()
+      };
+
+      videojs.log('playerresize', values);
+
+    });
+  </script>
+
+</body>
+</html>
