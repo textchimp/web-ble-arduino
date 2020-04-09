@@ -34,10 +34,24 @@ const speedBox = document.querySelector('#a');
 const intervalBox = document.querySelector('#b');
 const overlay = document.querySelector('#overlay');
 
+const urlParams = new URLSearchParams(window.location.search);
+const debug = urlParams.get('debug');
+console.log(debug, urlParams);
+// const debug = urlParams.get('debug');
+
+if( debug ){
+  document.querySelector('.slidecontainer').style.display = 'inline-block';
+  console.log('DEBUG');
+}
+
 const timeoutSlowDown = () => {
-  updatePlaybackRate( rotationInterval * 1.5 ); // slow down more quickly
+  const nextTimeout = rotationInterval * 0.75;
+  rotationInterval *= 1.5; // update globally, slow down more quickly
+  updatePlaybackRate( rotationInterval );
+  console.log( 'timeoutSlowDown:', rotationInterval, 'next:', nextTimeout  );
+
   clearTimeout( notificationTimeoutID ); // just in case?
-  notificationTimeoutID = setTimeout( timeoutSlowDown, rotationInterval/2 );
+  notificationTimeoutID = setTimeout( timeoutSlowDown, nextTimeout );
 };
 
 
@@ -67,8 +81,6 @@ const handleNotifications = (event, fakeData=null) => {
   // Ignore updates that take longer than 10s
   if( !fakeData && timeSinceLastUpdate > 10000 ){
     console.log(`(ignoring ${timeSinceLastUpdate})`);
-    // rotationInterval = 20000; // stop video?
-
     return;  // ignore!
   }
 
@@ -78,10 +90,17 @@ const handleNotifications = (event, fakeData=null) => {
     timerID = setTimeout( () => handleNotifications( {}, fakeData ), fakeData ); // next timer
   } else {
     // get real sensor data
+    const value = event.target.value.getUint32(0, true);
+
+    if( value < minInterval/2 ){
+      return; //ignore intervals which are too small (bad data)
+    }
+
     rotationInterval = event.target.value.getUint32(0, true);
     // ^ 2nd arg 'true' means BIG-ENDIAN value
     // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32
   }
+
 
   updatePlaybackRate( rotationInterval ); // actually change the video rate
 
@@ -90,7 +109,7 @@ const handleNotifications = (event, fakeData=null) => {
 
   // Deal with excess wait timeouts
   clearTimeout( notificationTimeoutID );
-  notificationTimeoutID = setTimeout( timeoutSlowDown, rotationInterval * 1.1 );
+  notificationTimeoutID = setTimeout( timeoutSlowDown, rotationInterval * 1.5 );
 
 } // handleNotifications()
 

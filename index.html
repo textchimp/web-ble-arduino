@@ -20,8 +20,9 @@
     height: 100%;
   }
   .slidecontainer {
-    width: 100%; /* Width of the outside container */
+    width: 100%;
     z-index: 10000000;
+    display: none; /* overriden for &debug=1 querystring */
   }
   .slider {
     -webkit-appearance: none;  /* Override default CSS styles */
@@ -113,6 +114,11 @@ iframe {
   <body>
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
 
+        <br>
+        <br>
+        <br>
+        <br>
+        
     <div class="slidecontainer">
       <!-- <button id="button">Bluetooth</button> -->
       <span id="a">speed: </span>
