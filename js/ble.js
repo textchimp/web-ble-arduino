@@ -82,9 +82,9 @@ function connect(){
         .then(characteristic => {
           myCharacteristic = characteristic;
           return myCharacteristic.startNotifications().then(_ => {
-            console.log('%c> Notifications started', 'color: blue; font-weight: bold;');
-            // myCharacteristic.addEventListener('characteristicvaluechanged', handleNotifications);
             myCharacteristic.oncharacteristicvaluechanged =  handleNotifications;
+            myCharacteristic.addEventListener('characteristicvaluechanged', handleNotifications);
+            console.log('%c> Notifications started', 'color: blue; font-weight: bold;');
           });
         })
         // .catch(error => {

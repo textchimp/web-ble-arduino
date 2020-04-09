@@ -56,7 +56,7 @@ const timeoutSlowDown = () => {
 
 
 const handleNotifications = (event, fakeData=null) => {
-  // console.log('handleNotifications', {event, fakeData});
+  console.log('handleNotifications', {event, fakeData});
 
   /*
   // let value = event.target.value;
