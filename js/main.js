@@ -1,4 +1,33 @@
 
+const videos = [
+  {
+    id: 'M0bIbOYKITM',
+    title: 'Col Des Tentes, French Pyrenees (Bike the World)',
+    minTime: 30, maxTime: 3600,
+  },
+  {
+    id: '07hTCBH8goQ',
+    title: ' Picos de Europa - mountains of Cantabria, Spain (Bike the World)',
+    minTime: 30, maxTime: 3600,
+  },
+  {
+    id: 'dCjt9eptadI',
+    title: 'Cotswalds UK, Sunset 30min',
+    minTime: 80, maxTime: 600, // total time only 30 min
+  },
+  {
+    id: 'ILqmM_ot36U',
+    title: 'Great Coastal Road, NZ',
+    minTime: 80, maxTime: 4800, // total time only 30 min
+  },
+  {
+    id: 'XvOUQOK69TA',
+    title: 'Hill Towns and Villages of Luberon (Provence)',
+    minTime: 30, maxTime: 3500, // total time only 30 min
+  },
+
+];
+
 // FASTEST: 1000 ms between pedals
 // SLOWEST: 6500 ms (6000?)
 // average:
@@ -35,9 +64,17 @@ const intervalBox = document.querySelector('#b');
 const overlay = document.querySelector('#overlay');
 
 const urlParams = new URLSearchParams(window.location.search);
+
 const debug = urlParams.get('debug');
-console.log(debug, urlParams);
+const videoIndex = urlParams.get('v') || Math.floor( Math.random() * videos.length );
+
+const video = videos[ videoIndex ];
+
+console.log('debug', debug);
+console.log('videoIndex', videoIndex, video);
+
 // const debug = urlParams.get('debug');
+
 
 if( debug ){
   document.querySelector('.slidecontainer').style.display = 'inline-block';
@@ -143,7 +180,7 @@ const mapRange = (v, inMin, inMax, y, z, clamp=true) => {
 // min speed: 0.25
 // max speed: 2
 
-const randStart = parseInt( 3600 * Math.random() );
+const randStart = video.minTime + parseInt( video.maxTime * Math.random() );
 console.log({ randStart });
 
 // 2. This code loads the IFrame Player API code asynchronously.
@@ -159,7 +196,7 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
     height: '100%',
     width: '100%',
-    videoId: 'M0bIbOYKITM',
+    videoId: video.id,
     // playerVars: { 'autoplay': 1, 'controls': 0 },
     playerVars: {
      // 'autoplay': 1,
@@ -170,7 +207,9 @@ function onYouTubeIframeAPIReady() {
      // 't': randStart + 's'
     },
     events: {
-      // 'onReady':  () => {},
+      'onReady':  () => {
+        player.mute();
+      },
       // 'onPlaybackRateChange': () => {},
       'onStateChange': (ev) => {
         overlay.className = (ev.data === YT.PlayerState.PLAYING) ? '' : 'flash';
